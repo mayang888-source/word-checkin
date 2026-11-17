@@ -1,392 +1,569 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>英语高频词 · 每日打卡</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#F6F7F4; color:#26262A; min-height:100vh; display:flex; justify-content:center; }
-  #app { width:100%; max-width:480px; min-height:100vh; background:#fff; padding:16px 18px 40px; }
-  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  .logo { font-size:20px; font-weight:700; color:#0F6E56; }
-  .logo span { color:#BA7517; }
-  .btn { border:none; border-radius:10px; padding:10px 14px; font-size:14px; cursor:pointer; background:#E1F5EE; color:#0F6E56; font-weight:600; }
-  .btn:active { opacity:.75; }
-  .btn-big { display:block; width:100%; padding:16px; font-size:17px; border-radius:14px; background:#0F6E56; color:#fff; font-weight:700; text-align:center; }
-  .btn-warn { background:#FAEEDA; color:#854F0B; }
-  .btn-ghost { background:#F1F1EE; color:#444; }
-  .card { background:#fff; border:1px solid #E7E7E2; border-radius:14px; padding:16px; margin-top:14px; }
-  .stat-row { display:flex; gap:10px; margin-top:14px; }
-  .stat { flex:1; background:#E1F5EE; border-radius:14px; padding:14px 8px; text-align:center; }
-  .stat b { font-size:24px; color:#0F6E56; display:block; }
-  .stat i { font-style:normal; font-size:12px; color:#0F6E56; opacity:.8; }
-  .streak { background:#FAEEDA; } .streak b { color:#854F0B; } .streak i { color:#854F0B; }
-  .wrongstat { background:#FCEBEB; } .wrongstat b { color:#A32D2D; } .wrongstat i { color:#A32D2D; }
-  .nav { display:flex; gap:8px; margin-top:14px; }
-  .nav .btn { flex:1; padding:12px 4px; font-size:13px; }
-  .word-card { margin-top:24px; min-height:280px; border:1px solid #E7E7E2; border-radius:18px; padding:28px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; }
-  .word-idx { position:absolute; top:12px; left:14px; font-size:12px; color:#999; }
-  .word-en { font-size:34px; font-weight:700; letter-spacing:1px; }
-  .word-cn { font-size:18px; color:#5F5E5A; margin-top:14px; min-height:26px; }
-  .word-cn.show { color:#0F6E56; font-weight:600; }
-  .word-btns { display:flex; gap:12px; margin-top:26px; width:100%; }
-  .word-btns .btn { flex:1; padding:14px; font-size:16px; font-weight:700; }
-  .ok { background:#0F6E56; color:#fff; }
-  .no { background:#FCEBEB; color:#A32D2D; }
-  .tag { display:inline-block; font-size:11px; color:#854F0B; background:#FAEEDA; border-radius:6px; padding:2px 8px; margin-left:8px; vertical-align:middle; }
-  .wlist li { list-style:none; display:flex; justify-content:space-between; padding:10px 4px; border-bottom:1px dashed #E7E7E2; font-size:15px; }
-  .wlist li small { color:#888780; }
-  .dots { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-  .dot { width:22px; height:22px; border-radius:50%; background:#F1F1EE; font-size:10px; display:flex; align-items:center; justify-content:center; color:#888780; }
-  .dot.on { background:#0F6E56; color:#fff; }
-  .done-hero { text-align:center; padding:40px 10px; }
-  .done-hero .big { font-size:52px; }
-  .done-hero h2 { margin-top:12px; font-size:20px; color:#0F6E56; }
-  .done-hero p { margin-top:8px; color:#888780; font-size:14px; }
-  h3.sec { margin-top:22px; font-size:15px; color:#444; }
-  textarea, input, select { width:100%; border:1px solid #D8D8D2; border-radius:10px; padding:12px; font-size:14px; margin-top:8px; background:#fff; }
-  .muted { color:#888780; font-size:12px; margin-top:6px; line-height:1.6; }
-  .hidden { display:none !important; }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#EEF0F3;color:#1F2430;min-height:100vh;display:flex;justify-content:center}
+  #app{width:100%;max-width:480px;min-height:100vh;background:#F3F4F6;padding-bottom:70px;position:relative}
+  .hd{height:50px;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;font-size:17px;font-weight:600;border-bottom:1px solid #EDEFF2}
+  .hd .back{position:absolute;left:10px;font-size:22px;color:#333;padding:4px 10px;cursor:pointer}
+  .wrap{padding:12px}
+  .card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(20,30,50,.04)}
+  .btn{display:block;width:100%;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer}
+  .btn:active{opacity:.8}
+  .btn-green{background:#1BA35C;color:#fff}
+  .btn-orange{background:#F5A22B;color:#fff}
+  .btn-white{background:#fff;color:#333;border:1px solid #E3E6EA}
+  .muted{color:#8A8F99;font-size:12px;line-height:1.6}
+  .hidden{display:none!important}
+  /* setup */
+  .logo{width:64px;height:64px;border-radius:16px;background:#2F6BF6;color:#fff;font-size:28px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;letter-spacing:1px}
+  .big-title{text-align:center;font-size:22px;font-weight:800;letter-spacing:.5px}
+  .sub{text-align:center;color:#8A8F99;font-size:13px;margin-top:6px}
+  input[type=text]{width:100%;border:1px solid #E3E6EA;border-radius:12px;padding:14px;font-size:15px;background:#fff;outline:none}
+  input[type=text]:focus{border-color:#1BA35C}
+  .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+  .chip{border:1px solid #E3E6EA;border-radius:12px;padding:12px 4px;text-align:center;font-size:14px;color:#4A4F59;background:#fff;cursor:pointer}
+  .chip.on{border-color:#1BA35C;color:#1BA35C;background:#E8F7EE;font-weight:700}
+  /* home */
+  .urow{display:flex;align-items:center;gap:10px}
+  .avatar{width:44px;height:44px;border-radius:50%;background:#F0F2F5;display:flex;align-items:center;justify-content:center;font-size:22px}
+  .uname{font-size:17px;font-weight:700}
+  .usub{font-size:12px;color:#8A8F99;margin-top:2px}
+  .pill{margin-left:auto;background:#E8F7EE;color:#1BA35C;font-size:12px;font-weight:600;border-radius:20px;padding:6px 12px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+  .stat{background:#F5F7F8;border-radius:12px;padding:10px 4px;text-align:center}
+  .stat b{display:block;font-size:20px;color:#1BA35C}
+  .stat i{font-style:normal;font-size:11px;color:#8A8F99}
+  .task{text-align:center}
+  .task .ic{font-size:34px}
+  .task h3{font-size:18px;margin-top:8px;font-weight:800}
+  .task p{color:#8A8F99;font-size:13px;margin:6px 0 14px}
+  .grid15{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+  .cell{height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;background:#F1F2F4;color:#B9BDC4;font-weight:600}
+  .cell.done{background:#E8F7EE;color:#1BA35C}
+  .cell.cur{background:#1BA35C;color:#fff}
+  .tabs{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;display:flex;border-top:1px solid #EDEFF2;z-index:9}
+  .tab{flex:1;padding:8px 0 10px;text-align:center;font-size:11px;color:#9AA0A9;cursor:pointer}
+  .tab.on{color:#1BA35C;font-weight:700}
+  .tab svg{display:block;margin:0 auto 3px}
+  /* learn */
+  .tagline{display:flex;justify-content:space-between;align-items:center}
+  .tag{background:#E8F7EE;color:#1BA35C;font-size:12px;font-weight:700;border-radius:8px;padding:5px 10px}
+  .word{text-align:center;font-size:44px;font-weight:800;color:#1BA35C;margin-top:22px;letter-spacing:1px}
+  .cmean{text-align:center;font-size:18px;color:#6B7280;margin-top:6px}
+  .pills{display:flex;gap:10px;justify-content:center;margin:18px 0}
+  .pillbtn{border:none;border-radius:22px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer}
+  .pb-green{background:#E8F7EE;color:#1BA35C}
+  .pb-orange{background:#FDF1E0;color:#E98A1B}
+  .exbox{background:#F5F6F8;border-radius:12px;padding:12px}
+  .exbox .en{font-size:15px;color:#1F2430}
+  .exbox .say{color:#E98A1B;font-size:13px;font-weight:600;cursor:pointer;margin-left:6px}
+  .exbox .cn{font-size:12px;color:#8A8F99;margin-top:4px}
+  /* quiz */
+  .q{font-size:19px;font-weight:800;line-height:1.5;margin:10px 0 16px}
+  .opt{border:1px solid #E3E6EA;border-radius:12px;padding:14px;font-size:16px;margin-bottom:10px;background:#fff;cursor:pointer}
+  .opt.right{border-color:#1BA35C;background:#E8F7EE;color:#128a4c;font-weight:700}
+  .opt.wrong{border-color:#E05252;background:#FDECEC;color:#C03636}
+  .tip{background:#FFF8E8;color:#B4761A;font-size:13px;border-radius:10px;padding:10px 12px;margin-top:12px;line-height:1.6}
+  .fb{margin-top:12px;font-size:14px;font-weight:700}
+  .fb.ok{color:#128a4c}.fb.no{color:#C03636}
+  /* result */
+  .res{text-align:center;padding:24px 8px}
+  .res .emo{font-size:56px}
+  .res h2{font-size:20px;margin-top:8px}
+  .res .score{font-size:44px;font-weight:800;color:#1BA35C;margin:8px 0}
+  .badge{font-size:13px;color:#6B7280;margin-top:6px}
+  /* report */
+  .rcard{background:#1BA35C;border-radius:16px;padding:16px;color:#fff}
+  .rcard h3{font-size:17px}
+  .rcard p{font-size:12px;opacity:.92;margin-top:6px}
+  .rrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #EDEFF2;font-size:15px}
+  .rrow:last-child{border-bottom:none}
+  .rrow .ok{color:#1BA35C}
+  .rrow .no{color:#E05252}
+  .rstats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+  .rstat{background:#E8F7EE;border-radius:12px;padding:10px 2px;text-align:center}
+  .rstat b{display:block;color:#1BA35C;font-size:16px}
+  .rstat i{font-style:normal;font-size:10px;color:#5FA57F}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rowline{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F0F2F5;font-size:15px}
+  .rowline:last-child{border-bottom:none}
+  .rowline small{color:#8A8F99;font-size:12px}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:12px}
+  .cal .d{height:34px;line-height:34px;border-radius:8px;color:#4A4F59}
+  .cal .d.has{background:#E8F7EE;color:#1BA35C;font-weight:700}
+  .cal .d.today{outline:2px solid #1BA35C}
+  .cal .hd7{color:#B9BDC4;font-weight:600}
+  .center{text-align:center}
 </style>
 </head>
 <body>
 <div id="app"></div>
+<script src="words.js"></script>
 <script>
 (function(){
 "use strict";
-var BANKS = {
-  "三年级起步": [
-    {w:"apple",m:"苹果"},{w:"banana",m:"香蕉"},{w:"cat",m:"猫"},{w:"dog",m:"狗"},
-    {w:"egg",m:"鸡蛋"},{w:"fish",m:"鱼"},{w:"girl",m:"女孩"},{w:"boy",m:"男孩"},
-    {w:"hand",m:"手"},{w:"head",m:"头"},{w:"kite",m:"风筝"},{w:"lion",m:"狮子"},
-    {w:"milk",m:"牛奶"},{w:"nose",m:"鼻子"},{w:"orange",m:"橙子"},{w:"pig",m:"猪"},
-    {w:"red",m:"红色"},{w:"sun",m:"太阳"},{w:"water",m:"水"},{w:"zoo",m:"动物园"},
-    {w:"book",m:"书"},{w:"pen",m:"钢笔"},{w:"bag",m:"书包"},{w:"desk",m:"课桌"},
-    {w:"chair",m:"椅子"},{w:"door",m:"门"},{w:"window",m:"窗户"},{w:"star",m:"星星"},
-    {w:"moon",m:"月亮"},{w:"tree",m:"树"},{w:"bird",m:"鸟"},{w:"cake",m:"蛋糕"},
-    {w:"ball",m:"球"},{w:"one",m:"一"},{w:"two",m:"二"},{w:"three",m:"三"},
-    {w:"big",m:"大的"},{w:"small",m:"小的"},{w:"long",m:"长的"},{w:"happy",m:"开心的"}
-  ],
-  "四年级": [
-    {w:"family",m:"家庭"},{w:"father",m:"爸爸"},{w:"mother",m:"妈妈"},{w:"teacher",m:"老师"},
-    {w:"student",m:"学生"},{w:"school",m:"学校"},{w:"classroom",m:"教室"},{w:"library",m:"图书馆"},
-    {w:"hospital",m:"医院"},{w:"cinema",m:"电影院"},{w:"park",m:"公园"},{w:"garden",m:"花园"},
-    {w:"river",m:"河流"},{w:"mountain",m:"山"},{w:"weather",m:"天气"},{w:"sunny",m:"晴朗的"},
-    {w:"rainy",m:"下雨的"},{w:"windy",m:"有风的"},{w:"cloudy",m:"多云的"},{w:"breakfast",m:"早餐"},
-    {w:"lunch",m:"午餐"},{w:"dinner",m:"晚餐"},{w:"sweater",m:"毛衣"},{w:"skirt",m:"裙子"},
-    {w:"shoes",m:"鞋"},{w:"computer",m:"电脑"},{w:"music",m:"音乐"},{w:"science",m:"科学"},
-    {w:"subject",m:"科目"},{w:"homework",m:"作业"},{w:"weekend",m:"周末"},{w:"holiday",m:"假期"},
-    {w:"birthday",m:"生日"},{w:"party",m:"聚会"},{w:"friend",m:"朋友"},{w:"beautiful",m:"美丽的"},
-    {w:"interesting",m:"有趣的"},{w:"kitchen",m:"厨房"},{w:"bedroom",m:"卧室"},{w:"candy",m:"糖果"}
-  ],
-  "五年级": [
-    {w:"season",m:"季节"},{w:"spring",m:"春天"},{w:"summer",m:"夏天"},{w:"autumn",m:"秋天"},
-    {w:"winter",m:"冬天"},{w:"January",m:"一月"},{w:"March",m:"三月"},{w:"June",m:"六月"},
-    {w:"September",m:"九月"},{w:"December",m:"十二月"},{w:"Monday",m:"星期一"},{w:"Friday",m:"星期五"},
-    {w:"Sunday",m:"星期日"},{w:"yesterday",m:"昨天"},{w:"tomorrow",m:"明天"},{w:"always",m:"总是"},
-    {w:"usually",m:"通常"},{w:"sometimes",m:"有时候"},{w:"never",m:"从不"},{w:"quiet",m:"安静的"},
-    {w:"active",m:"活跃的"},{w:"smart",m:"聪明的"},{w:"funny",m:"滑稽的"},{w:"strict",m:"严格的"},
-    {w:"kind",m:"和蔼的"},{w:"polite",m:"有礼貌的"},{w:"helpful",m:"乐于助人的"},{w:"village",m:"村庄"},
-    {w:"city",m:"城市"},{w:"bridge",m:"桥"},{w:"house",m:"房子"},{w:"road",m:"马路"},
-    {w:"traffic",m:"交通"},{w:"travel",m:"旅行"},{w:"trip",m:"短途旅行"},{w:"museum",m:"博物馆"},
-    {w:"supermarket",m:"超市"},{w:"restaurant",m:"餐馆"},{w:"north",m:"北方"},{w:"east",m:"东方"}
-  ],
-  "六年级": [
-    {w:"expensive",m:"昂贵的"},{w:"cheap",m:"便宜的"},{w:"heavier",m:"更重的"},{w:"thinner",m:"更瘦的"},
-    {w:"bigger",m:"更大的"},{w:"smaller",m:"更小的"},{w:"stronger",m:"更强壮的"},{w:"younger",m:"更年轻的"},
-    {w:"magazine",m:"杂志"},{w:"dictionary",m:"词典"},{w:"postcard",m:"明信片"},{w:"newspaper",m:"报纸"},
-    {w:"enjoy",m:"享受；喜欢"},{w:"collect",m:"收集"},{w:"hobby",m:"爱好"},{w:"plant",m:"植物；种植"},
-    {w:"grow",m:"种植；生长"},{w:"seed",m:"种子"},{w:"soil",m:"土壤"},{w:"sprout",m:"嫩芽"},
-    {w:"insect",m:"昆虫"},{w:"butterfly",m:"蝴蝶"},{w:"bee",m:"蜜蜂"},{w:"remember",m:"记得"},
-    {w:"forget",m:"忘记"},{w:"practice",m:"练习"},{w:"exercise",m:"锻炼"},{w:"healthy",m:"健康的"},
-    {w:"energy",m:"能量"},{w:"sick",m:"生病的"},{w:"medicine",m:"药"},{w:"rest",m:"休息"},
-    {w:"pollution",m:"污染"},{w:"protect",m:"保护"},{w:"recycle",m:"回收利用"},{w:"environment",m:"环境"},
-    {w:"history",m:"历史"},{w:"geography",m:"地理"},{w:"culture",m:"文化"},{w:"festival",m:"节日"}
-  ],
-  "自定义词库": []
-};
-
-var KEY = "wordCheckinDB_v1";
-var db = null;
-try { db = JSON.parse(localStorage.getItem(KEY)); } catch(e) { db = null; }
-if (!db || !db.name) { db = { name:"", bank:"", pointer:0, mastered:{}, wrong:{}, reviewQueue:[], records:{}, customWords:[] }; }
-function save(){ localStorage.setItem(KEY, JSON.stringify(db)); }
-function app(){ return document.getElementById("app"); }
-function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function today(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
-function bankWords(){
-  if (db.bank === "自定义词库") return db.customWords;
-  return BANKS[db.bank] || [];
-}
-function currentBank(){ return BANKS[db.bank] || []; }
-
-function calcStreak(){
-  var dates = Object.keys(db.records).sort();
-  if (!dates.length) return 0;
-  var t = new Date(); var last = new Date(dates[dates.length-1].replace(/-/g,"/"));
-  var diff = Math.floor((t - last) / 86400000);
-  if (diff > 1) return 0;
-  var streak = 1;
-  for (var i = dates.length-1; i > 0; i--) {
-    var d1 = new Date(dates[i].replace(/-/g,"/"));
-    var d0 = new Date(dates[i-1].replace(/-/g,"/"));
-    if (Math.floor((d1 - d0) / 86400000) === 1) streak++;
-    else break;
+var KEY="yqgd_v1";
+var S=null;
+try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){S=null}
+if(!S||typeof S!=="object")S={name:"",grade:"",records:{},wrong:{}};
+if(!S.records)S.records={}; if(!S.wrong)S.wrong={};
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+function el(){return document.getElementById("app")}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function tn(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function today(){return tn()}
+function days(){return (WORDS[S.grade]||[])}
+function dayData(n){var a=days();return a[(n-1)%a.length]}
+function doneCount(){return Object.keys(S.records).length}
+function curDay(){return Math.min(doneCount()+1,days().length)}
+function streak(){
+  var ds=Object.keys(S.records).map(function(k){return S.records[k].date}).sort();
+  if(!ds.length)return 0;
+  var last=new Date(ds[ds.length-1].replace(/-/g,"/"));
+  var now=new Date();now.setHours(0,0,0,0);last.setHours(0,0,0,0);
+  var diff=Math.round((now-last)/86400000);
+  if(diff>1)return 0;
+  var n=1;
+  for(var i=ds.length-1;i>0;i--){
+    var d1=new Date(ds[i].replace(/-/g,"/")),d0=new Date(ds[i-1].replace(/-/g,"/"));
+    if(Math.round((d1-d0)/86400000)===1)n++;else break;
   }
-  return streak;
+  return n;
+}
+function allWords(){ // flat unique words learned
+  var m={};var r=S.records;
+  for(var k in r){ (r[k].words||[]).forEach(function(x){m[x[0]]=1}) }
+  return Object.keys(m).length;
+}
+function accuracy(){
+  var c=0,t=0;for(var k in S.records){c+=S.records[k].correct||0;t+=S.records[k].total||0}
+  return t?Math.round(c/t*100):0;
+}
+function say(text,rate){
+  try{
+    if(!window.speechSynthesis)return;
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang="en-US";u.rate=rate||0.8;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function ic(p){ // tab icons
+  var s='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
+  return s+p+'</svg>';
+}
+var ICON_HOME='<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>';
+var ICON_EDIT='<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>';
+var ICON_BAR='<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>';
+var ICON_CAL='<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/>';
+function tabs(active){
+  function t(k,name,icon){return '<div class="tab '+(active===k?'on':'')+'" onclick="go(\''+k+'\')">'+ic(icon)+name+'</div>'}
+  return '<div class="tabs">'+t("home","首页",ICON_HOME)+t("practice","练习",ICON_EDIT)+t("report","报告",ICON_BAR)+t("records","记录",ICON_CAL)+'</div>';
 }
 
-/* ---------- 首次设置 ---------- */
-function renderSetup(){
-  var banks = Object.keys(BANKS);
-  var opts = banks.map(function(b){ return '<option value="'+esc(b)+'">'+esc(b)+'</option>'; }).join("");
-  app().innerHTML =
-    '<div class="top"><div class="logo">英语高频词<span>·</span>每日打卡</div></div>' +
-    '<div class="card"><h3 class="sec" style="margin-top:0">开始使用（本地版 · 数据存在这台设备里）</h3>' +
-    '<input id="stuName" placeholder="学生姓名，如：依婷" maxlength="10">' +
-    '<select id="stuBank">' + opts + '</select>' +
-    '<div class="muted">· 每天10个词，学过的自动记录，不熟的进错词本第二天复习<br>· 换设备、换手机数据不互通；可随时在“我的数据”里导出备份</div>' +
-    '<button class="btn-big" style="margin-top:14px" onclick="startUse()">开始打卡</button></div>';
+/* ---------- 页面 ---------- */
+function vSetup(){
+  var gs=Object.keys(WORDS);
+  var chips=gs.map(function(g){return '<div class="chip '+(S.grade===g?"on":"")+'" onclick="pickGrade(\''+g+'\')">'+g+'</div>'}).join("");
+  el().innerHTML=
+   '<div class="wrap" style="padding-top:26px">'+
+   '<div class="logo">abc</div>'+
+   '<div class="big-title">英语高频词 · 每日打卡</div>'+
+   '<div class="sub">每天5分钟，孩子自己就能完成</div>'+
+   '<div class="card" style="margin-top:18px"><b>家长您好 👋</b><div class="muted" style="margin-top:6px">打开就能用，不用下载、不用注册。第一次填好名字和年级，以后打开直接练。</div></div>'+
+   '<div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:8px">孩子的名字</div>'+
+   '<input type="text" id="nm" maxlength="10" placeholder="比如：小明" value="'+esc(S.name)+'">'+
+   '<div style="font-size:14px;font-weight:600;margin:14px 0 2px">选择年级</div>'+
+   '<div class="chips">'+chips+'</div></div>'+
+   '<button class="btn btn-green" onclick="startNow()">开始打卡</button>'+
+   '<div class="muted center" style="margin-top:14px">1~6年级都有配套词库 · 数据存在本机</div>'+
+   '</div>';
 }
-window.startUse = function(){
-  var n = document.getElementById("stuName").value.trim();
-  if (!n) { alert("请先填写学生姓名"); return; }
-  db.name = n;
-  db.bank = document.getElementById("stuBank").value;
-  if (db.bank === "自定义词库" && !db.customWords.length) { alert("自定义词库还没有词，请先到“我的数据”里添加，或先选内置词库"); return; }
-  save();
-  renderHome();
-};
-
-/* ---------- 首页 ---------- */
-function renderHome(){
-  var words = bankWords();
-  var mastered = Object.keys(db.mastered).length;
-  var streak = calcStreak();
-  var wrongN = Object.keys(db.wrong).length;
-  var doneToday = !!db.records[today()];
-  var recent = [];
-  for (var i=13;i>=0;i--){
-    var d = new Date(); d.setDate(d.getDate()-i);
-    var ds = d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
-    recent.push('<div class="dot'+(db.records[ds]?' on':'')+'">'+("0"+d.getDate()).slice(-2)+'</div>');
+function vHome(){
+  var daysArr=days(), n=curDay(), d=dayData(n), allDone=doneCount()>=daysArr.length;
+  var cells="";
+  for(var i=1;i<=daysArr.length;i++){
+    var cls= i<n ? "done" : (i===n && !allDone ? "cur" : (S.records[i]?"done":""));
+    if(S.records[i])cls="done"; if(i===n&&!allDone)cls="cur";
+    cells+='<div class="cell '+cls+'">'+i+'</div>';
   }
-  var nameTag = db.name ? esc(db.name) + ' 的打卡' : '打卡';
-  app().innerHTML =
-    '<div class="top"><div class="logo">英语高频词<span>·</span>每日打卡</div><button class="btn btn-ghost" onclick="renderData()">我的数据</button></div>' +
-    '<div class="card" style="background:#E1F5EE;border:none"><b style="font-size:17px;color:#0F6E56">'+nameTag+'</b>' +
-    '<div style="font-size:13px;color:#0F6E56;opacity:.8;margin-top:4px">词库：'+esc(db.bank)+'（共 '+words.length+' 词）</div></div>' +
-    '<div class="stat-row">' +
-      '<div class="stat"><b>'+mastered+'</b><i>已掌握词数</i></div>' +
-      '<div class="stat streak"><b>'+streak+'</b><i>连续打卡天数</i></div>' +
-      '<div class="stat wrongstat"><b>'+wrongN+'</b><i>待复习错词</i></div>' +
-    '</div>' +
-    '<h3 class="sec">最近14天打卡</h3><div class="dots">'+recent.join("")+'</div>' +
-    (doneToday
-      ? '<button class="btn-big" style="margin-top:20px;background:#97C459;color:#26500A" onclick="renderDone(0)">今日已打卡 ✓ 点击查看</button>'
-      : '<button class="btn-big" style="margin-top:20px" onclick="startSession()">开始今日打卡（约8分钟）</button>') +
-    '<div class="nav">' +
-      '<button class="btn btn-warn" onclick="renderWrong()">错词本复习</button>' +
-      '<button class="btn" onclick="renderList()">全部单词</button>' +
-      '<button class="btn" onclick="switchBank()">更换词库</button>' +
-    '</div>';
+  el().innerHTML=
+   '<div class="hd">英语高频词打卡</div>'+
+   '<div class="wrap">'+
+   '<div class="card"><div class="urow"><div class="avatar">👦</div><div><div class="uname">'+esc(S.name)+'</div><div class="usub">'+esc(S.grade)+' · 已打卡 '+doneCount()+' 天</div></div><div class="pill">连续 '+streak()+' 天</div></div>'+
+   '<div class="stats">'+
+    '<div class="stat"><b>'+doneCount()+'</b><i>打卡次数</i></div>'+
+    '<div class="stat"><b>'+streak()+'</b><i>连续天数</i></div>'+
+    '<div class="stat"><b>'+allWords()+'</b><i>已学单词</i></div>'+
+    '<div class="stat"><b>'+accuracy()+'%</b><i>总正确率</i></div>'+
+   '</div></div>'+
+   '<div class="card task"><div class="ic">🗓️</div><h3>'+(allDone?"15 天全部完成 🎉":"今天的任务：Day "+n)+'</h3>'+
+   '<p>'+(allDone?"去练习页复习错词，保持记忆":esc(d.t)+'　共'+d.w.length+'个新词 · 约5分钟')+'</p>'+
+   (allDone?'<button class="btn btn-green" onclick="go(\'practice\')">去复习错词</button>':'<button class="btn btn-orange" onclick="startLearn()">开始今日打卡</button>')+
+   '</div>'+
+   '<div class="card"><div style="font-size:15px;font-weight:700">闯关进度</div><div class="grid15">'+cells+'</div></div>'+
+   '</div>'+tabs("home");
 }
-window.switchBank = function(){
-  var banks = Object.keys(BANKS);
-  var html = '<div class="top"><div class="logo">更换词库</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>';
-  html += '<div class="card">';
-  banks.forEach(function(b){
-    var cur = (b === db.bank) ? '（当前）' : '';
-    html += '<li class="wlist" style="list-style:none;border-bottom:1px dashed #E7E7E2"><div style="display:flex;justify-content:space-between;padding:12px 4px"><span>'+esc(b)+'<small style="color:#888"> '+BANKS[b].length+'词 '+cur+'</small></span>' +
-      (b===db.bank ? '' : '<button class="btn" onclick="setBank(\''+b+'\')">使用</button>') + '</div></li>';
+
+/* ---- 认一认 ---- */
+var L=null;
+function startLearn(){
+  var n=curDay();
+  L={day:n,i:0};
+  vLearn();
+}
+function vLearn(){
+  var n=L.day, d=dayData(n), it=d.w[L.i], total=d.w.length, last=(L.i===total-1);
+  el().innerHTML=
+   '<div class="hd"><span class="back" onclick="go(\'home\')">‹</span>认一认</div>'+
+   '<div class="wrap"><div class="card">'+
+   '<div class="tagline"><span class="tag">Day '+n+' · '+esc(d.t)+'</span><span class="muted">'+(L.i+1)+'/'+total+'</span></div>'+
+   '<div class="word">'+esc(it[0])+'</div><div class="cmean">'+esc(it[1])+'</div>'+
+   '<div class="pills"><button class="pillbtn pb-green" onclick="say(\''+esc(it[0])+'\')">🔊 读单词</button>'+
+   '<button class="pillbtn pb-orange" onclick="followRead(\''+esc(it[0])+'\')">✏️ 跟我读</button></div>'+
+   (it[2]?'<div class="exbox"><div class="en">'+esc(it[2])+'<span class="say" onclick="say(\''+esc(it[2])+'\',0.85)">🔊 听句子</span></div><div class="cn">'+esc(it[1])+'</div></div>':'')+
+   '<div id="rd" class="muted center" style="margin-top:10px"></div>'+
+   '<button class="btn btn-green" style="margin-top:14px" onclick="nextWord()">'+(last?'开始闯关 ›':'下一个 ›')+'</button>'+
+   '<button class="btn btn-white" style="margin-top:10px" onclick="go(\'home\')">先回去，待会再学</button>'+
+   '</div></div>';
+  say(it[0]);
+}
+function nextWord(){
+  var d=dayData(L.day);
+  if(L.i<d.w.length-1){L.i++;vLearn();}
+  else{L=null;startQuiz(false);}
+}
+function followRead(word){
+  var box=document.getElementById("rd");
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){box.textContent="当前浏览器不支持录音打分，跟着大声读一遍就好～";return}
+  try{
+    var r=new SR(); r.lang="en-US"; r.interimResults=false; r.maxAlternatives=1;
+    box.textContent="正在听…请读：" + word;
+    r.onresult=function(e){
+      var t=(e.results[0][0].transcript||"").trim().toLowerCase();
+      var w=word.toLowerCase();
+      var s=0;
+      if(t===w)s=100;
+      else if(t.indexOf(w)>=0||w.indexOf(t.replace(/[^a-z ]/g,""))>=0)s=90;
+      else s=Math.max(50,Math.round(100-lev(w,t)*18));
+      box.innerHTML='<span style="color:#1BA35C;font-weight:700">得分 '+s+' 分</span>（听到：'+esc(t)+'）'+(s>=90?" 太棒了！":" 再读一遍更准哦");
+      if(s>=90)say(w);
+    };
+    r.onerror=function(){box.textContent="没听清，再点一次试试～"};
+    r.start();
+  }catch(e){box.textContent="录音启动失败，跟着读一遍即可"}
+}
+function lev(a,b){
+  var m=[],i,j;
+  for(i=0;i<=b.length;i++)m[i]=[i];
+  for(j=1;j<=a.length;j++)m[0][j]=j;
+  for(i=1;i<=b.length;i++)for(j=1;j<=a.length;j++){
+    m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[j-1]===b[i-1]?0:1));
+  }
+  return m[b.length][a.length];
+}
+
+/* ---- 闯关 ---- */
+var Q=null;
+function gradePool(){var p=[];days().forEach(function(d){d.w.forEach(function(x){p.push(x)})});return p}
+function makeQ(d){
+  var pool=gradePool(), qs=[];
+  d.w.forEach(function(it){
+    qs.push({type:"spell",en:it[0],cn:it[1]});
+    var t=Math.random()<0.5?"cn2en":"en2cn";
+    qs.push({type:t,en:it[0],cn:it[1]});
   });
-  html += '</div><div class="muted">换词库后：已掌握的词保留；新词从所选词库按序学习。</div>';
-  app().innerHTML = html;
-};
-window.setBank = function(b){
-  db.bank = b; db.pointer = 0; save(); renderHome();
-};
-
-/* ---------- 今日打卡会话 ---------- */
-var session = null;
-window.startSession = function(){
-  var all = bankWords();
-  if (!all.length) { alert("当前词库没有单词，请到“我的数据 → 自定义词库”添加，或换个内置词库"); return; }
-  var reviews = db.reviewQueue.slice(0,5);
-  var newOnes = [];
-  var total = all.length;
-  var idx = db.pointer;
-  for (var k=0; k<total && newOnes.length<10; k++) {
-    var cand = all[idx % total];
-    if (!db.mastered[cand.w]) newOnes.push(cand);
-    idx++;
-  }
-  if (!newOnes.length && !reviews.length) { alert("太棒了，这个词库已经全部学完！可以更换词库或添加自定义单词。"); return; }
-  session = { list: reviews.concat(newOnes), pos: 0, newCount: newOnes.length, endPointer: idx };
-  if (session.list.length > 15) session.list = session.list.slice(0,15);
-  renderStudy();
-};
-function renderStudy(){
-  var item = session.list[session.pos];
-  var isReview = db.wrong[item.w];
-  app().innerHTML =
-    '<div class="top"><div class="logo">今日打卡</div><span style="font-size:13px;color:#888780">'+(session.pos+1)+' / '+session.list.length+'</span></div>' +
-    '<div class="word-card">' +
-      '<div class="word-idx">'+(isReview?'<span class="tag">错词复习</span>':'新词')+'</div>' +
-      '<div class="word-en">'+esc(item.w)+'</div>' +
-      '<div class="word-cn" id="cn">点“看答案”显示意思</div>' +
-      '<div class="word-btns">' +
-        '<button class="btn no" id="btnNo" onclick="mark(0)">不熟</button>' +
-        '<button class="btn ghost" id="btnShow" style="background:#F1F1EE;color:#444" onclick="showCn()">看答案</button>' +
-        '<button class="btn ok" id="btnOk" onclick="mark(1)">认识</button>' +
-      '</div>' +
-    '</div>';
-}
-window.showCn = function(){
-  var item = session.list[session.pos];
-  var cn = document.getElementById("cn");
-  cn.textContent = item.m;
-  cn.className = "word-cn show";
-};
-window.mark = function(known){
-  var item = session.list[session.pos];
-  if (known) {
-    db.mastered[item.w] = true;
-    var qi = db.reviewQueue.indexOf(item.w);
-    if (qi >= 0) db.reviewQueue.splice(qi,1);
-    delete db.wrong[item.w];
-  } else {
-    db.wrong[item.w] = (db.wrong[item.w]||0) + 1;
-    if (db.reviewQueue.indexOf(item.w) < 0) db.reviewQueue.push(item.w);
-  }
-  session.pos++;
-  save();
-  if (session.pos >= session.list.length) finishSession();
-  else renderStudy();
-};
-function finishSession(){
-  db.pointer = session.endPointer % bankWords().length;
-  db.records[today()] = { count: session.list.length };
-  save();
-  renderDone(session.list.length);
-}
-window.renderDone = function(n){
-  var streak = calcStreak();
-  var mastered = Object.keys(db.mastered).length;
-  app().innerHTML =
-    '<div class="done-hero">' +
-      '<div class="big">🎉</div>' +
-      '<h2>打卡成功！</h2>' +
-      '<p>本轮学习了 <b>'+n+'</b> 个词，已掌握 <b>'+mastered+'</b> 个词</p>' +
-      '<p style="color:#854F0B;font-weight:600">已连续打卡 '+streak+' 天，继续保持！</p>' +
-      '<button class="btn-big" style="margin-top:24px" onclick="renderHome()">返回首页</button>' +
-    '</div>';
-};
-
-/* ---------- 错词本 ---------- */
-window.renderWrong = function(){
-  var wrongs = Object.keys(db.wrong);
-  var html = '<div class="top"><div class="logo">错词本</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>';
-  if (!wrongs.length) {
-    html += '<div class="card" style="text-align:center;color:#0F6E56;font-weight:600;padding:30px">没有错词，太棒了！</div>';
-  } else {
-    html += '<div class="card"><ul class="wlist">' + wrongs.map(function(w){
-      var meaning = findMeaning(w);
-      return '<li><span>'+esc(w)+'</span><small>'+esc(meaning)+' · 错 '+db.wrong[w]+' 次</small></li>';
-    }).join("") + '</ul>';
-    html += '<button class="btn-big" style="margin-top:14px" onclick="startSession()">开始复习（会优先出这些词）</button></div>';
-  }
-  app().innerHTML = html;
-};
-function findMeaning(w){
-  var banks = BANKS;
-  for (var b in banks) { for (var i=0;i<banks[b].length;i++) if (banks[b][i].w === w) return banks[b][i].m; }
-  for (var j=0;j<db.customWords.length;j++) if (db.customWords[j].w === w) return db.customWords[j].m;
-  return "";
-}
-
-/* ---------- 全部单词 ---------- */
-window.renderList = function(){
-  var all = bankWords();
-  var html = '<div class="top"><div class="logo">全部单词</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>';
-  html += '<div class="card"><ul class="wlist">' + all.map(function(it){
-    var ok = db.mastered[it.w] ? '<span style="color:#0F6E56;font-weight:600">已掌握</span>' : (db.wrong[it.w] ? '<span style="color:#A32D2D">错词</span>' : '<span style="color:#888">待学习</span>');
-    return '<li><span>'+esc(it.w)+' <small style="margin-left:8px">'+esc(it.m)+'</small></span>'+ok+'</li>';
-  }).join("") + '</ul></div>';
-  app().innerHTML = html;
-};
-
-/* ---------- 我的数据 ---------- */
-window.renderData = function(){
-  var lines = db.customWords.map(function(it){ return it.w+"|"+it.m; }).join("\n");
-  app().innerHTML =
-    '<div class="top"><div class="logo">我的数据</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>' +
-    '<div class="card">' +
-      '<h3 class="sec" style="margin-top:0">备份与恢复（推荐每周一次）</h3>' +
-      '<button class="btn-big" onclick="exportData()">导出备份文件</button>' +
-      '<button class="btn-big btn-warn" style="margin-top:10px" onclick="document.getElementById(\'impFile\').click()">导入备份文件</button>' +
-      '<input type="file" id="impFile" accept=".json" class="hidden" onchange="importData(this)">' +
-      '<div class="muted">导出的文件发给老师保存；换新手机时导入即可恢复全部进度。</div>' +
-    '</div>' +
-    '<div class="card">' +
-      '<h3 class="sec" style="margin-top:0">添加自定义单词（每行一个：单词|意思）</h3>' +
-      '<textarea id="cwArea" rows="5" placeholder="例如：&#10;theater|剧场&#10;excited|兴奋的">' + esc(lines) + '</textarea>' +
-      '<button class="btn-big" style="margin-top:10px" onclick="saveCustom()">保存自定义词库</button>' +
-    '</div>' +
-    '<div class="card">' +
-      '<h3 class="sec" style="margin-top:0">清空数据</h3>' +
-      '<button class="btn-big btn-warn" onclick="resetAll()" style="background:#FCEBEB;color:#A32D2D">清空全部打卡记录（不可恢复）</button>' +
-    '</div>';
-};
-window.saveCustom = function(){
-  var txt = document.getElementById("cwArea").value.trim();
-  var arr = [];
-  txt.split("\n").forEach(function(line){
-    line = line.trim();
-    if (!line) return;
-    var parts = line.split("|");
-    var w = parts[0].trim(), m = parts[1] ? parts[1].trim() : "";
-    if (w) arr.push({w:w, m:m});
+  shuffle(qs);
+  qs.forEach(function(q){
+    if(q.type==="spell")return;
+    var opt=[],self=q.type==="cn2en"?q.en:q.cn;
+    opt.push(self);
+    while(opt.length<4){
+      var p=pool[Math.floor(Math.random()*pool.length)];
+      var v=(q.type==="cn2en")?p[0]:p[1];
+      if(opt.indexOf(v)<0)opt.push(v);
+    }
+    q.opts=shuffle(opt.slice());
   });
-  db.customWords = arr;
-  if (db.bank === "自定义词库" && !arr.length) db.bank = "三年级起步";
+  return qs;
+}
+function startQuiz(isReview){
+  var d=dayData(curDay());
+  Q={day:curDay(),qs:isReview?buildReview():makeQ(d),i:0,correct:0,right:[]};
+  vQuiz();
+}
+function buildReview(){
+  var ws=Object.keys(S.wrong).slice(0,8);
+  var qs=[];
+  ws.forEach(function(w){
+    var info=findWord(w); if(!info)return;
+    qs.push({type:"spell",en:info[0],cn:info[1]});
+    qs.push({type:Math.random()<0.5?"cn2en":"en2cn",en:info[0],cn:info[1]});
+  });
+  if(!qs.length)return [];
+  var pool=gradePool();
+  qs.forEach(function(q){
+    if(q.type==="spell")return;
+    var opt=[q.type==="cn2en"?q.en:q.cn];
+    while(opt.length<4){
+      var p=pool[Math.floor(Math.random()*pool.length)];
+      var v=q.type==="cn2en"?p[0]:p[1];
+      if(opt.indexOf(v)<0)opt.push(v);
+    }
+    q.opts=shuffle(opt.slice());
+  });
+  return shuffle(qs).slice(0,8);
+}
+function findWord(w){
+  var found=null;
+  Object.keys(WORDS).forEach(function(g){WORDS[g].forEach(function(d){d.w.forEach(function(x){if(x[0]===w)found=x})})});
+  return found;
+}
+function vQuiz(){
+  var q=Q.qs[Q.i];
+  if(!q){finishQuiz();return}
+  var head='<div class="hd"><span class="back" onclick="go(\'home\')">‹</span>闯关</div>';
+  var card='<div class="card"><div class="tagline"><span class="tag">Day '+Q.day+' 闯关</span><span class="muted">'+(Q.i+1)+'/'+Q.qs.length+'</span></div>';
+  if(q.type==="spell"){
+    card+='<div class="q">“'+esc(q.cn)+'” 用英文怎么拼写？</div>'+
+      '<div class="center"><button class="pillbtn pb-green" onclick="say(\''+esc(q.en)+'\')">🔊 再听一遍</button></div>'+
+      '<input type="text" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="在这里写出英文单词" style="margin-top:14px">'+
+      '<button class="btn btn-green" style="margin-top:12px" onclick="submitSpell()">提交</button>'+
+      '<div class="tip">💡 想不起来？点「再听一遍」，或者点下面的"看提示"。</div>'+
+      '<button class="btn btn-white" style="margin-top:10px" onclick="hint()">看提示（首字母 '+esc(q.en[0])+'）</button>'+
+      '<div id="fb" class="fb"></div>';
+  }else{
+    var qtext=q.type==="cn2en"?'“'+esc(q.cn)+'” 用英文怎么说？':'“'+esc(q.en)+'” 是什么意思？';
+    card+='<div class="q">'+qtext+'</div>';
+    q.opts.forEach(function(o,i){
+      card+='<div class="opt" id="o'+i+'" onclick="pick('+i+')">'+esc(o)+'</div>';
+    });
+    card+='<div id="fb" class="fb"></div>';
+    say(q.en);
+  }
+  card+='</div>';
+  el().innerHTML=head+'<div class="wrap">'+card+'</div>';
+  var inp=document.getElementById("ans"); if(inp)setTimeout(function(){inp.focus()},120);
+}
+function hint(){
+  var q=Q.qs[Q.i], inp=document.getElementById("ans");
+  if(inp&&!inp.value)inp.value=q.en[0];
+  var fb=document.getElementById("fb");
+  fb.className="fb";fb.innerHTML='<span style="color:#B4761A">提示：首字母 '+esc(q.en[0])+'，共 '+q.en.replace(/[^a-zA-Z]/g,"").length+' 个字母</span>';
+}
+function submitSpell(){
+  var q=Q.qs[Q.i], inp=document.getElementById("ans");
+  var v=(inp.value||"").trim().toLowerCase(), ok=(v===q.en.toLowerCase());
+  var fb=document.getElementById("fb");
+  if(ok){Q.correct++;Q.right.push([q.en,true]);fb.className="fb ok";fb.textContent="✅ 正确！正确答案：" + q.en}
+  else{Q.right.push([q.en,false]);fb.className="fb no";fb.textContent="❌ 正确答案是：" + q.en + "，跟读一遍记住它";say(q.en)}
+  setTimeout(nextQ,ok?850:1600);
+}
+var picked=false;
+function pick(i){
+  if(picked)return; picked=true;
+  var q=Q.qs[Q.i], fb=document.getElementById("fb");
+  var ans=q.type==="cn2en"?q.en:q.cn;
+  var chosen=q.opts[i], ok=(chosen===ans);
+  if(ok){document.getElementById("o"+i).className="opt right";Q.correct++;Q.right.push([q.en,true]);fb.className="fb ok";fb.textContent="✅ 回答正确！"+q.en+" — "+q.cn}
+  else{
+    document.getElementById("o"+i).className="opt wrong";
+    q.opts.forEach(function(o,j){if(o===ans)document.getElementById("o"+j).className="opt right"});
+    Q.right.push([q.en,false]);fb.className="fb no";fb.textContent="❌ 正确答案："+q.en+" — "+q.cn;say(q.en);
+  }
+  setTimeout(nextQ,ok?850:1700);
+}
+function nextQ(){picked=false;Q.i++;vQuiz()}
+function finishQuiz(){
+  var total=Q.qs.length, correct=Q.correct, day=Q.day;
+  S.records[day]={date:today(),correct:correct,total:total,words:Q.right};
+  Q.right.forEach(function(x){ if(x[1]){delete S.wrong[x[0]]} else {S.wrong[x[0]]=(S.wrong[x[0]]||0)+1} });
   save();
-  alert("已保存 "+arr.length+" 个自定义单词");
-};
-window.exportData = function(){
-  var blob = new Blob([JSON.stringify(db, null, 2)], {type:"application/json"});
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "单词打卡备份-" + db.name + "-" + today() + ".json";
-  a.click();
-};
-window.importData = function(input){
-  var f = input.files[0];
-  if (!f) return;
-  var reader = new FileReader();
-  reader.onload = function(){
-    try {
-      var obj = JSON.parse(reader.result);
-      if (!obj || !obj.name) throw new Error("bad");
-      db = obj;
-      save();
-      alert("导入成功，欢迎回来 " + db.name);
-      renderHome();
-    } catch(e) { alert("导入失败：文件格式不正确"); }
-  };
-  reader.readAsText(f);
-};
-window.resetAll = function(){
-  if (!confirm("确定要清空全部数据吗？此操作不可恢复，建议先导出备份。")) return;
-  db = { name:"", bank:"", pointer:0, mastered:{}, wrong:{}, reviewQueue:[], records:{}, customWords:[] };
-  save();
-  renderSetup();
-};
+  var pct=Math.round(correct/total*100);
+  var emo=pct>=100?"😄":(pct>=75?"🙂":"💪");
+  var badge=pct>=100?"🏅 全部答对，一个错误都没有，太厉害了！":"✏️ 错了"+(total-correct)+"个，错题已收进错题本，明天再练一遍～";
+  el().innerHTML='<div class="hd">闯关结果</div><div class="wrap"><div class="card res">'+
+    '<div class="emo">'+emo+'</div><h2>Day '+day+' 打卡完成！</h2>'+
+    '<div class="score">'+correct+' / '+total+'</div>'+
+    '<div class="muted">正确率 '+pct+'%'+(pct>=75?"，太棒了！继续保持～":"，再接再厉！")+'</div>'+
+    '<div class="badge">'+badge+'</div>'+
+    '<button class="btn btn-green" style="margin-top:18px" onclick="go(\'report\')">📊 生成打卡报告图片</button>'+
+    '<button class="btn btn-white" style="margin-top:10px" onclick="go(\'home\')">返回首页</button>'+
+    '</div></div>';
+}
 
-if (db.name) renderHome(); else renderSetup();
+/* ---- 报告 ---- */
+function latestDay(){var ks=Object.keys(S.records);if(!ks.length)return 0;return Math.max.apply(null,ks.map(Number))}
+function vReport(){
+  var n=latestDay(), rec=S.records[n];
+  var head='<div class="hd"><span class="back" onclick="go(\'home\')">‹</span>打卡报告</div>';
+  if(!rec){
+    el().innerHTML=head+'<div class="wrap"><div class="card center"><div style="font-size:40px">📝</div><div style="margin-top:10px;font-weight:700">还没有打卡记录</div><div class="muted" style="margin-top:6px">完成今天的打卡后，这里会生成报告卡片</div><button class="btn btn-green" style="margin-top:16px" onclick="go(\'home\')">去打卡</button></div></div>'+tabs("report");
+    return;
+  }
+  var d=dayData(n), pct=Math.round(rec.correct/rec.total*100);
+  var rows=rec.words.map(function(x){
+    var info=findWord(x[0]);
+    return '<div class="rrow"><span>'+esc(x[0])+'</span><span>'+esc(info?info[1]:"")+' <span class="'+(x[1]?"ok":"no")+'">'+(x[1]?"✓":"✗")+'</span></span></div>';
+  }).join("");
+  el().innerHTML=head+'<div class="wrap">'+
+    '<div class="card" style="padding:0;overflow:hidden">'+
+     '<div class="rcard" style="border-radius:16px 16px 0 0"><h3>英语高频词 · 每日打卡报告</h3><p>'+rec.date+' · '+esc(S.grade)+'</p></div>'+
+     '<div style="padding:16px">'+
+      '<div style="display:flex;justify-content:space-between"><b>'+esc(S.name)+'</b><span class="muted">正确率 '+pct+'%</span></div>'+
+      '<div class="muted" style="margin-top:4px">今日进度：Day '+n+' · '+esc(d.t)+'</div>'+
+      '<div style="margin-top:10px">'+rows+'</div>'+
+      '<div class="rstats">'+
+       '<div class="rstat"><b>'+doneCount()+'天</b><i>累计打卡</i></div>'+
+       '<div class="rstat"><b>'+streak()+'天</b><i>连续打卡</i></div>'+
+       '<div class="rstat"><b>'+accuracy()+'%</b><i>总正确率</i></div>'+
+       '<div class="rstat"><b>'+Object.keys(S.wrong).length+'个</b><i>错词</i></div>'+
+      '</div>'+
+      '<div class="muted center" style="margin-top:12px">每天 5 分钟 · 小小进步看得见</div>'+
+     '</div></div>'+
+    '<div class="two"><button class="btn btn-orange" onclick="copyReport()">📋 复制图片</button>'+
+    '<button class="btn btn-green" onclick="saveReport()">⬇ 保存图片</button></div>'+
+    '<div class="muted center" style="margin-top:10px">复制后直接在微信里粘贴发给老师，或保存到相册再发</div>'+
+   '</div>'+tabs("report");
+}
+function drawReport(){
+  var n=latestDay(), rec=S.records[n]; if(!rec)return null;
+  var d=dayData(n), pct=Math.round(rec.correct/rec.total*100);
+  var W=750,H=1050,c=document.createElement("canvas");c.width=W;c.height=H;
+  var x=c.getContext("2d");
+  x.fillStyle="#F3F4F6";x.fillRect(0,0,W,H);
+  x.fillStyle="#ffffff";r(x,30,30,W-60,H-60,24);x.fill();
+  x.fillStyle="#1BA35C";r(x,30,30,W-60,170,24);x.fill();
+  x.fillStyle="#fff";x.font="bold 30px 'Microsoft YaHei',sans-serif";
+  x.fillText("英语高频词 · 每日打卡报告",70,100);
+  x.font="20px 'Microsoft YaHei',sans-serif";x.globalAlpha=.92;
+  x.fillText(rec.date+" · "+S.grade,70,145);x.globalAlpha=1;
+  x.fillStyle="#1F2430";x.font="bold 26px 'Microsoft YaHei',sans-serif";
+  x.fillText(S.name,70,250);
+  x.fillStyle="#8A8F99";x.font="20px 'Microsoft YaHei',sans-serif";
+  x.fillText("正确率 "+pct+"%",W-70-x.measureText("正确率 "+pct+"%").width,250);
+  x.fillText("今日进度：Day "+n+" · "+d.t,70,290);
+  var y=350;
+  rec.words.forEach(function(w){
+    var info=findWord(w[0]);
+    x.fillStyle="#1F2430";x.font="bold 24px 'Microsoft YaHei',sans-serif";x.fillText(w[0],70,y);
+    x.fillStyle="#8A8F99";x.font="20px 'Microsoft YaHei',sans-serif";
+    var m=(info?info[1]:"")+"  "+(w[1]?"✓":"✗");
+    x.fillText(m,W-70-x.measureText(m).width,y);
+    x.strokeStyle="#EDEFF2";x.beginPath();x.moveTo(70,y+18);x.lineTo(W-70,y+18);x.stroke();
+    y+=58;
+  });
+  y+=20;
+  var stats=[[doneCount()+"天","累计打卡"],[streak()+"天","连续打卡"],[accuracy()+"%","总正确率"],[Object.keys(S.wrong).length+"个","错词"]];
+  var bw=(W-140-3*14)/4;
+  stats.forEach(function(s,i){
+    var bx=70+i*(bw+14);
+    x.fillStyle="#E8F7EE";r(x,bx,y,bw,110,16);x.fill();
+    x.fillStyle="#1BA35C";x.font="bold 26px 'Microsoft YaHei',sans-serif";x.textAlign="center";
+    x.fillText(s[0],bx+bw/2,y+52);
+    x.fillStyle="#5FA57F";x.font="16px 'Microsoft YaHei',sans-serif";
+    x.fillText(s[1],bx+bw/2,y+86);x.textAlign="left";
+  });
+  x.fillStyle="#B9BDC4";x.font="18px 'Microsoft YaHei',sans-serif";x.textAlign="center";
+  x.fillText("每天 5 分钟 · 小小进步看得见",W/2,H-90);x.textAlign="left";
+  return c;
+}
+function r(x,a,b,w,h,rad){x.beginPath();x.moveTo(a+rad,b);x.lineTo(a+w-rad,b);x.quadraticCurveTo(a+w,b,a+w,b+rad);x.lineTo(a+w,b+h-rad);x.quadraticCurveTo(a+w,b+h,a+w-rad,b+h);x.lineTo(a+rad,b+h);x.quadraticCurveTo(a,b+h,a,b+h-rad);x.lineTo(a,b+rad);x.quadraticCurveTo(a,b,a+rad,b);x.closePath()}
+function saveReport(){
+  var c=drawReport();if(!c)return;
+  var a=document.createElement("a");a.download="打卡报告-"+S.name+"-"+today()+".png";a.href=c.toDataURL("image/png");a.click();
+}
+function copyReport(){
+  var c=drawReport();if(!c)return;
+  if(!navigator.clipboard||!window.ClipboardItem){alert("当前浏览器不支持复制图片，请用「保存图片」");return}
+  c.toBlob(function(b){
+    try{navigator.clipboard.write([new ClipboardItem({"image/png":b})]).then(function(){alert("已复制！去微信里粘贴发给老师吧")},function(){alert("复制失败，请用「保存图片」")})}
+    catch(e){alert("复制失败，请用「保存图片」")}
+  });
+}
+
+/* ---- 练习 ---- */
+function vPractice(){
+  var ws=Object.keys(S.wrong);
+  var list=ws.length?ws.map(function(w){var i=findWord(w);return '<div class="rowline"><span>'+esc(w)+' <small>'+esc(i?i[1]:"")+'</small></span><small>错 '+S.wrong[w]+' 次</small></div>'}).join(""):'<div class="center muted" style="padding:24px 0">暂无错词，太棒了！</div>';
+  el().innerHTML='<div class="hd">练习</div><div class="wrap">'+
+   '<div class="card"><div style="font-weight:700;margin-bottom:4px">错题本（'+ws.length+' 个）</div>'+list+'</div>'+
+   (ws.length?'<button class="btn btn-green" onclick="startReviewQuiz()">开始复习错词</button>':'')+
+   '</div>'+tabs("practice");
+}
+function startReviewQuiz(){
+  var qs=buildReview();
+  if(!qs.length){alert("没有可复习的错词");return}
+  Q={day:latestDay()||1,qs:qs,i:0,correct:0,right:[],review:true};
+  vQuiz();
+}
+
+/* ---- 记录 ---- */
+function vRecords(){
+  var now=new Date(),y=now.getFullYear(),mo=now.getMonth();
+  var first=new Date(y,mo,1).getDay(), dim=new Date(y,mo+1,0).getDate();
+  var has={};Object.keys(S.records).forEach(function(k){has[S.records[k].date]=1});
+  var cells="";["日","一","二","三","四","五","六"].forEach(function(d){cells+='<div class="hd7">'+d+'</div>'});
+  for(var i=0;i<first;i++)cells+='<div></div>';
+  for(var d=1;d<=dim;d++){
+    var ds=y+"-"+("0"+(mo+1)).slice(-2)+"-"+("0"+d).slice(-2);
+    var cls="d"+(has[ds]?" has":"")+(ds===today()?" today":"");
+    cells+='<div class="'+cls+'">'+d+'</div>';
+  }
+  var rows=Object.keys(S.records).sort(function(a,b){return b-a}).map(function(k){
+    var r=S.records[k],pct=Math.round(r.correct/r.total*100);
+    return '<div class="rowline"><span>Day '+k+' <small>'+r.date+'</small></span><small>'+r.correct+'/'+r.total+' · '+pct+'%</small></div>';
+  }).join("")||'<div class="center muted" style="padding:20px 0">还没有记录</div>';
+  el().innerHTML='<div class="hd">记录</div><div class="wrap">'+
+   '<div class="card"><div style="font-weight:700;margin-bottom:10px">'+(mo+1)+'月打卡日历</div><div class="cal">'+cells+'</div></div>'+
+   '<div class="card"><div style="font-weight:700;margin-bottom:4px">打卡历史</div>'+rows+'</div>'+
+   '</div>'+tabs("records");
+}
+
+/* ---- 路由 ---- */
+var route="home";
+function render(){
+  if(!S.name||!S.grade){vSetup();return}
+  if(route==="setup")vSetup();
+  else if(route==="learn")vLearn();
+  else if(route==="quiz")vQuiz();
+  else if(route==="report")vReport();
+  else if(route==="practice")vPractice();
+  else if(route==="records")vRecords();
+  else vHome();
+}
+window.go=function(p){route=p;render();window.scrollTo(0,0)};
+window.pickGrade=function(g){
+  S.grade=g;save();
+  var chips=document.querySelectorAll(".chip");
+  Object.keys(WORDS).forEach(function(k,i){chips[i].className="chip "+(k===g?"on":"")});
+};
+window.startNow=function(){
+  var n=document.getElementById("nm").value.trim();
+  if(!n){alert("请先填写孩子的名字");return}
+  if(!S.grade){alert("请选择年级");return}
+  S.name=n;save();go("home");
+};
+window.startLearn=startLearn;
+window.startQuiz=startQuiz;
+window.startReviewQuiz=startReviewQuiz;
+window.nextWord=nextWord;
+window.submitSpell=submitSpell;
+window.hint=hint;
+window.pick=pick;
+window.followRead=followRead;
+window.say=say;
+window.saveReport=saveReport;
+window.copyReport=copyReport;
+if(S.name&&S.grade){route="home";vHome()}else{vSetup()}
 })();
 </script>
 </body>
 </html>
-
