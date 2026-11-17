@@ -146,6 +146,19 @@ function accuracy(){
   return t?Math.round(c/t*100):0;
 }
 function say(text,rate){
+  /* 优先用有道词典发音（国内可用、微信内也能响），失败再回退系统TTS */
+  try{
+    var au=say._a;
+    if(au){au.pause();au=null;say._a=null}
+    var a=new Audio("https://dict.youdao.com/dictvoice?audio="+encodeURIComponent(text)+"&type=2");
+    say._a=a;
+    var played=false;
+    a.addEventListener("playing",function(){played=true});
+    a.play().catch(function(){ if(!played) ttsSpeak(text,rate) });
+    setTimeout(function(){ if(!played) ttsSpeak(text,rate) },1200);
+  }catch(e){ ttsSpeak(text,rate) }
+}
+function ttsSpeak(text,rate){
   try{
     if(!window.speechSynthesis)return;
     speechSynthesis.cancel();
@@ -242,10 +255,19 @@ function nextWord(){
 function followRead(word){
   var box=document.getElementById("rd");
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){box.textContent="当前浏览器不支持录音打分，跟着大声读一遍就好～";return}
+  if(!SR){
+    /* 降级模式：不支持录音打分 → 听慢速+跟读三遍 */
+    say(word,0.7);
+    box.innerHTML='<div style="text-align:center">'+
+      '<div style="color:#F5A22B;font-weight:700;margin-bottom:6px">🔊 跟读模式（免打分）</div>'+
+      '<div class="muted">先听慢速发音，再大声跟读三遍：<br><b style="color:#1BA35C;font-size:18px">'+esc(word)+'、'+esc(word)+'、'+esc(word)+'</b></div>'+
+      '<button class="pillbtn pb-orange" style="margin-top:8px" onclick="say(\''+esc(word)+'\',0.7)">🔊 再听一遍慢速</button>'+
+      '</div>';
+    return;
+  }
   try{
     var r=new SR(); r.lang="en-US"; r.interimResults=false; r.maxAlternatives=1;
-    box.textContent="正在听…请读：" + word;
+    box.textContent="🎙 正在听…请读：" + word;
     r.onresult=function(e){
       var t=(e.results[0][0].transcript||"").trim().toLowerCase();
       var w=word.toLowerCase();
@@ -256,9 +278,21 @@ function followRead(word){
       box.innerHTML='<span style="color:#1BA35C;font-weight:700">得分 '+s+' 分</span>（听到：'+esc(t)+'）'+(s>=90?" 太棒了！":" 再读一遍更准哦");
       if(s>=90)say(w);
     };
-    r.onerror=function(){box.textContent="没听清，再点一次试试～"};
+    r.onerror=function(e){
+      if(e.error==="not-allowed"||e.error==="service-not-allowed"){
+        box.innerHTML='🎤 麦克风权限被拒绝了。<br>请在浏览器设置里允许本页使用麦克风，再点一次"跟我读"。<br><span class="muted">或者点上面的"跟读三遍"模式。</span>';
+      }else if(e.error==="network"){
+        /* 国内浏览器连不上语音识别服务器 → 自动切跟读模式 */
+        say(word,0.7);
+        box.innerHTML='<div style="color:#F5A22B;font-weight:700">当前浏览器不支持在线语音识别</div><div class="muted">已切换为跟读模式：听慢速，大声读三遍 '+esc(word)+'、'+esc(word)+'、'+esc(word)+'</div><button class="pillbtn pb-orange" style="margin-top:8px" onclick="say(\''+esc(word)+'\',0.7)">🔊 再听一遍慢速</button>';
+      }else{
+        box.textContent="没听清，再点一次试试～";
+      }
+    };
     r.start();
-  }catch(e){box.textContent="录音启动失败，跟着读一遍即可"}
+  }catch(e){
+    box.innerHTML='<div style="color:#F5A22B;font-weight:700">🔊 跟读模式</div><div class="muted">大声读三遍：'+esc(word)+'、'+esc(word)+'、'+esc(word)+'</div><button class="pillbtn pb-orange" style="margin-top:8px" onclick="say(\''+esc(word)+'\',0.7)">🔊 再听一遍慢速</button>';
+  }
 }
 function lev(a,b){
   var m=[],i,j;
