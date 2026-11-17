@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>英语高频词 · 每日打卡</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#F6F7F4; color:#26262A; min-height:100vh; display:flex; justify-content:center; }
+  #app { width:100%; max-width:480px; min-height:100vh; background:#fff; padding:16px 18px 40px; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .logo { font-size:20px; font-weight:700; color:#0F6E56; }
+  .logo span { color:#BA7517; }
+  .btn { border:none; border-radius:10px; padding:10px 14px; font-size:14px; cursor:pointer; background:#E1F5EE; color:#0F6E56; font-weight:600; }
+  .btn:active { opacity:.75; }
+  .btn-big { display:block; width:100%; padding:16px; font-size:17px; border-radius:14px; background:#0F6E56; color:#fff; font-weight:700; text-align:center; }
+  .btn-warn { background:#FAEEDA; color:#854F0B; }
+  .btn-ghost { background:#F1F1EE; color:#444; }
+  .card { background:#fff; border:1px solid #E7E7E2; border-radius:14px; padding:16px; margin-top:14px; }
+  .stat-row { display:flex; gap:10px; margin-top:14px; }
+  .stat { flex:1; background:#E1F5EE; border-radius:14px; padding:14px 8px; text-align:center; }
+  .stat b { font-size:24px; color:#0F6E56; display:block; }
+  .stat i { font-style:normal; font-size:12px; color:#0F6E56; opacity:.8; }
+  .streak { background:#FAEEDA; } .streak b { color:#854F0B; } .streak i { color:#854F0B; }
+  .wrongstat { background:#FCEBEB; } .wrongstat b { color:#A32D2D; } .wrongstat i { color:#A32D2D; }
+  .nav { display:flex; gap:8px; margin-top:14px; }
+  .nav .btn { flex:1; padding:12px 4px; font-size:13px; }
+  .word-card { margin-top:24px; min-height:280px; border:1px solid #E7E7E2; border-radius:18px; padding:28px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; }
+  .word-idx { position:absolute; top:12px; left:14px; font-size:12px; color:#999; }
+  .word-en { font-size:34px; font-weight:700; letter-spacing:1px; }
+  .word-cn { font-size:18px; color:#5F5E5A; margin-top:14px; min-height:26px; }
+  .word-cn.show { color:#0F6E56; font-weight:600; }
+  .word-btns { display:flex; gap:12px; margin-top:26px; width:100%; }
+  .word-btns .btn { flex:1; padding:14px; font-size:16px; font-weight:700; }
+  .ok { background:#0F6E56; color:#fff; }
+  .no { background:#FCEBEB; color:#A32D2D; }
+  .tag { display:inline-block; font-size:11px; color:#854F0B; background:#FAEEDA; border-radius:6px; padding:2px 8px; margin-left:8px; vertical-align:middle; }
+  .wlist li { list-style:none; display:flex; justify-content:space-between; padding:10px 4px; border-bottom:1px dashed #E7E7E2; font-size:15px; }
+  .wlist li small { color:#888780; }
+  .dots { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .dot { width:22px; height:22px; border-radius:50%; background:#F1F1EE; font-size:10px; display:flex; align-items:center; justify-content:center; color:#888780; }
+  .dot.on { background:#0F6E56; color:#fff; }
+  .done-hero { text-align:center; padding:40px 10px; }
+  .done-hero .big { font-size:52px; }
+  .done-hero h2 { margin-top:12px; font-size:20px; color:#0F6E56; }
+  .done-hero p { margin-top:8px; color:#888780; font-size:14px; }
+  h3.sec { margin-top:22px; font-size:15px; color:#444; }
+  textarea, input, select { width:100%; border:1px solid #D8D8D2; border-radius:10px; padding:12px; font-size:14px; margin-top:8px; background:#fff; }
+  .muted { color:#888780; font-size:12px; margin-top:6px; line-height:1.6; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+"use strict";
+var BANKS = {
+  "三年级起步": [
+    {w:"apple",m:"苹果"},{w:"banana",m:"香蕉"},{w:"cat",m:"猫"},{w:"dog",m:"狗"},
+    {w:"egg",m:"鸡蛋"},{w:"fish",m:"鱼"},{w:"girl",m:"女孩"},{w:"boy",m:"男孩"},
+    {w:"hand",m:"手"},{w:"head",m:"头"},{w:"kite",m:"风筝"},{w:"lion",m:"狮子"},
+    {w:"milk",m:"牛奶"},{w:"nose",m:"鼻子"},{w:"orange",m:"橙子"},{w:"pig",m:"猪"},
+    {w:"red",m:"红色"},{w:"sun",m:"太阳"},{w:"water",m:"水"},{w:"zoo",m:"动物园"},
+    {w:"book",m:"书"},{w:"pen",m:"钢笔"},{w:"bag",m:"书包"},{w:"desk",m:"课桌"},
+    {w:"chair",m:"椅子"},{w:"door",m:"门"},{w:"window",m:"窗户"},{w:"star",m:"星星"},
+    {w:"moon",m:"月亮"},{w:"tree",m:"树"},{w:"bird",m:"鸟"},{w:"cake",m:"蛋糕"},
+    {w:"ball",m:"球"},{w:"one",m:"一"},{w:"two",m:"二"},{w:"three",m:"三"},
+    {w:"big",m:"大的"},{w:"small",m:"小的"},{w:"long",m:"长的"},{w:"happy",m:"开心的"}
+  ],
+  "四年级": [
+    {w:"family",m:"家庭"},{w:"father",m:"爸爸"},{w:"mother",m:"妈妈"},{w:"teacher",m:"老师"},
+    {w:"student",m:"学生"},{w:"school",m:"学校"},{w:"classroom",m:"教室"},{w:"library",m:"图书馆"},
+    {w:"hospital",m:"医院"},{w:"cinema",m:"电影院"},{w:"park",m:"公园"},{w:"garden",m:"花园"},
+    {w:"river",m:"河流"},{w:"mountain",m:"山"},{w:"weather",m:"天气"},{w:"sunny",m:"晴朗的"},
+    {w:"rainy",m:"下雨的"},{w:"windy",m:"有风的"},{w:"cloudy",m:"多云的"},{w:"breakfast",m:"早餐"},
+    {w:"lunch",m:"午餐"},{w:"dinner",m:"晚餐"},{w:"sweater",m:"毛衣"},{w:"skirt",m:"裙子"},
+    {w:"shoes",m:"鞋"},{w:"computer",m:"电脑"},{w:"music",m:"音乐"},{w:"science",m:"科学"},
+    {w:"subject",m:"科目"},{w:"homework",m:"作业"},{w:"weekend",m:"周末"},{w:"holiday",m:"假期"},
+    {w:"birthday",m:"生日"},{w:"party",m:"聚会"},{w:"friend",m:"朋友"},{w:"beautiful",m:"美丽的"},
+    {w:"interesting",m:"有趣的"},{w:"kitchen",m:"厨房"},{w:"bedroom",m:"卧室"},{w:"candy",m:"糖果"}
+  ],
+  "五年级": [
+    {w:"season",m:"季节"},{w:"spring",m:"春天"},{w:"summer",m:"夏天"},{w:"autumn",m:"秋天"},
+    {w:"winter",m:"冬天"},{w:"January",m:"一月"},{w:"March",m:"三月"},{w:"June",m:"六月"},
+    {w:"September",m:"九月"},{w:"December",m:"十二月"},{w:"Monday",m:"星期一"},{w:"Friday",m:"星期五"},
+    {w:"Sunday",m:"星期日"},{w:"yesterday",m:"昨天"},{w:"tomorrow",m:"明天"},{w:"always",m:"总是"},
+    {w:"usually",m:"通常"},{w:"sometimes",m:"有时候"},{w:"never",m:"从不"},{w:"quiet",m:"安静的"},
+    {w:"active",m:"活跃的"},{w:"smart",m:"聪明的"},{w:"funny",m:"滑稽的"},{w:"strict",m:"严格的"},
+    {w:"kind",m:"和蔼的"},{w:"polite",m:"有礼貌的"},{w:"helpful",m:"乐于助人的"},{w:"village",m:"村庄"},
+    {w:"city",m:"城市"},{w:"bridge",m:"桥"},{w:"house",m:"房子"},{w:"road",m:"马路"},
+    {w:"traffic",m:"交通"},{w:"travel",m:"旅行"},{w:"trip",m:"短途旅行"},{w:"museum",m:"博物馆"},
+    {w:"supermarket",m:"超市"},{w:"restaurant",m:"餐馆"},{w:"north",m:"北方"},{w:"east",m:"东方"}
+  ],
+  "六年级": [
+    {w:"expensive",m:"昂贵的"},{w:"cheap",m:"便宜的"},{w:"heavier",m:"更重的"},{w:"thinner",m:"更瘦的"},
+    {w:"bigger",m:"更大的"},{w:"smaller",m:"更小的"},{w:"stronger",m:"更强壮的"},{w:"younger",m:"更年轻的"},
+    {w:"magazine",m:"杂志"},{w:"dictionary",m:"词典"},{w:"postcard",m:"明信片"},{w:"newspaper",m:"报纸"},
+    {w:"enjoy",m:"享受；喜欢"},{w:"collect",m:"收集"},{w:"hobby",m:"爱好"},{w:"plant",m:"植物；种植"},
+    {w:"grow",m:"种植；生长"},{w:"seed",m:"种子"},{w:"soil",m:"土壤"},{w:"sprout",m:"嫩芽"},
+    {w:"insect",m:"昆虫"},{w:"butterfly",m:"蝴蝶"},{w:"bee",m:"蜜蜂"},{w:"remember",m:"记得"},
+    {w:"forget",m:"忘记"},{w:"practice",m:"练习"},{w:"exercise",m:"锻炼"},{w:"healthy",m:"健康的"},
+    {w:"energy",m:"能量"},{w:"sick",m:"生病的"},{w:"medicine",m:"药"},{w:"rest",m:"休息"},
+    {w:"pollution",m:"污染"},{w:"protect",m:"保护"},{w:"recycle",m:"回收利用"},{w:"environment",m:"环境"},
+    {w:"history",m:"历史"},{w:"geography",m:"地理"},{w:"culture",m:"文化"},{w:"festival",m:"节日"}
+  ],
+  "自定义词库": []
+};
+
+var KEY = "wordCheckinDB_v1";
+var db = null;
+try { db = JSON.parse(localStorage.getItem(KEY)); } catch(e) { db = null; }
+if (!db || !db.name) { db = { name:"", bank:"", pointer:0, mastered:{}, wrong:{}, reviewQueue:[], records:{}, customWords:[] }; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(db)); }
+function app(){ return document.getElementById("app"); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function today(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+function bankWords(){
+  if (db.bank === "自定义词库") return db.customWords;
+  return BANKS[db.bank] || [];
+}
+function currentBank(){ return BANKS[db.bank] || []; }
+
+function calcStreak(){
+  var dates = Object.keys(db.records).sort();
+  if (!dates.length) return 0;
+  var t = new Date(); var last = new Date(dates[dates.length-1].replace(/-/g,"/"));
+  var diff = Math.floor((t - last) / 86400000);
+  if (diff > 1) return 0;
+  var streak = 1;
+  for (var i = dates.length-1; i > 0; i--) {
+    var d1 = new Date(dates[i].replace(/-/g,"/"));
+    var d0 = new Date(dates[i-1].replace(/-/g,"/"));
+    if (Math.floor((d1 - d0) / 86400000) === 1) streak++;
+    else break;
+  }
+  return streak;
+}
+
+/* ---------- 首次设置 ---------- */
+function renderSetup(){
+  var banks = Object.keys(BANKS);
+  var opts = banks.map(function(b){ return '<option value="'+esc(b)+'">'+esc(b)+'</option>'; }).join("");
+  app().innerHTML =
+    '<div class="top"><div class="logo">英语高频词<span>·</span>每日打卡</div></div>' +
+    '<div class="card"><h3 class="sec" style="margin-top:0">开始使用（本地版 · 数据存在这台设备里）</h3>' +
+    '<input id="stuName" placeholder="学生姓名，如：依婷" maxlength="10">' +
+    '<select id="stuBank">' + opts + '</select>' +
+    '<div class="muted">· 每天10个词，学过的自动记录，不熟的进错词本第二天复习<br>· 换设备、换手机数据不互通；可随时在“我的数据”里导出备份</div>' +
+    '<button class="btn-big" style="margin-top:14px" onclick="startUse()">开始打卡</button></div>';
+}
+window.startUse = function(){
+  var n = document.getElementById("stuName").value.trim();
+  if (!n) { alert("请先填写学生姓名"); return; }
+  db.name = n;
+  db.bank = document.getElementById("stuBank").value;
+  if (db.bank === "自定义词库" && !db.customWords.length) { alert("自定义词库还没有词，请先到“我的数据”里添加，或先选内置词库"); return; }
+  save();
+  renderHome();
+};
+
+/* ---------- 首页 ---------- */
+function renderHome(){
+  var words = bankWords();
+  var mastered = Object.keys(db.mastered).length;
+  var streak = calcStreak();
+  var wrongN = Object.keys(db.wrong).length;
+  var doneToday = !!db.records[today()];
+  var recent = [];
+  for (var i=13;i>=0;i--){
+    var d = new Date(); d.setDate(d.getDate()-i);
+    var ds = d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+    recent.push('<div class="dot'+(db.records[ds]?' on':'')+'">'+("0"+d.getDate()).slice(-2)+'</div>');
+  }
+  var nameTag = db.name ? esc(db.name) + ' 的打卡' : '打卡';
+  app().innerHTML =
+    '<div class="top"><div class="logo">英语高频词<span>·</span>每日打卡</div><button class="btn btn-ghost" onclick="renderData()">我的数据</button></div>' +
+    '<div class="card" style="background:#E1F5EE;border:none"><b style="font-size:17px;color:#0F6E56">'+nameTag+'</b>' +
+    '<div style="font-size:13px;color:#0F6E56;opacity:.8;margin-top:4px">词库：'+esc(db.bank)+'（共 '+words.length+' 词）</div></div>' +
+    '<div class="stat-row">' +
+      '<div class="stat"><b>'+mastered+'</b><i>已掌握词数</i></div>' +
+      '<div class="stat streak"><b>'+streak+'</b><i>连续打卡天数</i></div>' +
+      '<div class="stat wrongstat"><b>'+wrongN+'</b><i>待复习错词</i></div>' +
+    '</div>' +
+    '<h3 class="sec">最近14天打卡</h3><div class="dots">'+recent.join("")+'</div>' +
+    (doneToday
+      ? '<button class="btn-big" style="margin-top:20px;background:#97C459;color:#26500A" onclick="renderDone(0)">今日已打卡 ✓ 点击查看</button>'
+      : '<button class="btn-big" style="margin-top:20px" onclick="startSession()">开始今日打卡（约8分钟）</button>') +
+    '<div class="nav">' +
+      '<button class="btn btn-warn" onclick="renderWrong()">错词本复习</button>' +
+      '<button class="btn" onclick="renderList()">全部单词</button>' +
+      '<button class="btn" onclick="switchBank()">更换词库</button>' +
+    '</div>';
+}
+window.switchBank = function(){
+  var banks = Object.keys(BANKS);
+  var html = '<div class="top"><div class="logo">更换词库</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>';
+  html += '<div class="card">';
+  banks.forEach(function(b){
+    var cur = (b === db.bank) ? '（当前）' : '';
+    html += '<li class="wlist" style="list-style:none;border-bottom:1px dashed #E7E7E2"><div style="display:flex;justify-content:space-between;padding:12px 4px"><span>'+esc(b)+'<small style="color:#888"> '+BANKS[b].length+'词 '+cur+'</small></span>' +
+      (b===db.bank ? '' : '<button class="btn" onclick="setBank(\''+b+'\')">使用</button>') + '</div></li>';
+  });
+  html += '</div><div class="muted">换词库后：已掌握的词保留；新词从所选词库按序学习。</div>';
+  app().innerHTML = html;
+};
+window.setBank = function(b){
+  db.bank = b; db.pointer = 0; save(); renderHome();
+};
+
+/* ---------- 今日打卡会话 ---------- */
+var session = null;
+window.startSession = function(){
+  var all = bankWords();
+  if (!all.length) { alert("当前词库没有单词，请到“我的数据 → 自定义词库”添加，或换个内置词库"); return; }
+  var reviews = db.reviewQueue.slice(0,5);
+  var newOnes = [];
+  var total = all.length;
+  var idx = db.pointer;
+  for (var k=0; k<total && newOnes.length<10; k++) {
+    var cand = all[idx % total];
+    if (!db.mastered[cand.w]) newOnes.push(cand);
+    idx++;
+  }
+  if (!newOnes.length && !reviews.length) { alert("太棒了，这个词库已经全部学完！可以更换词库或添加自定义单词。"); return; }
+  session = { list: reviews.concat(newOnes), pos: 0, newCount: newOnes.length, endPointer: idx };
+  if (session.list.length > 15) session.list = session.list.slice(0,15);
+  renderStudy();
+};
+function renderStudy(){
+  var item = session.list[session.pos];
+  var isReview = db.wrong[item.w];
+  app().innerHTML =
+    '<div class="top"><div class="logo">今日打卡</div><span style="font-size:13px;color:#888780">'+(session.pos+1)+' / '+session.list.length+'</span></div>' +
+    '<div class="word-card">' +
+      '<div class="word-idx">'+(isReview?'<span class="tag">错词复习</span>':'新词')+'</div>' +
+      '<div class="word-en">'+esc(item.w)+'</div>' +
+      '<div class="word-cn" id="cn">点“看答案”显示意思</div>' +
+      '<div class="word-btns">' +
+        '<button class="btn no" id="btnNo" onclick="mark(0)">不熟</button>' +
+        '<button class="btn ghost" id="btnShow" style="background:#F1F1EE;color:#444" onclick="showCn()">看答案</button>' +
+        '<button class="btn ok" id="btnOk" onclick="mark(1)">认识</button>' +
+      '</div>' +
+    '</div>';
+}
+window.showCn = function(){
+  var item = session.list[session.pos];
+  var cn = document.getElementById("cn");
+  cn.textContent = item.m;
+  cn.className = "word-cn show";
+};
+window.mark = function(known){
+  var item = session.list[session.pos];
+  if (known) {
+    db.mastered[item.w] = true;
+    var qi = db.reviewQueue.indexOf(item.w);
+    if (qi >= 0) db.reviewQueue.splice(qi,1);
+    delete db.wrong[item.w];
+  } else {
+    db.wrong[item.w] = (db.wrong[item.w]||0) + 1;
+    if (db.reviewQueue.indexOf(item.w) < 0) db.reviewQueue.push(item.w);
+  }
+  session.pos++;
+  save();
+  if (session.pos >= session.list.length) finishSession();
+  else renderStudy();
+};
+function finishSession(){
+  db.pointer = session.endPointer % bankWords().length;
+  db.records[today()] = { count: session.list.length };
+  save();
+  renderDone(session.list.length);
+}
+window.renderDone = function(n){
+  var streak = calcStreak();
+  var mastered = Object.keys(db.mastered).length;
+  app().innerHTML =
+    '<div class="done-hero">' +
+      '<div class="big">🎉</div>' +
+      '<h2>打卡成功！</h2>' +
+      '<p>本轮学习了 <b>'+n+'</b> 个词，已掌握 <b>'+mastered+'</b> 个词</p>' +
+      '<p style="color:#854F0B;font-weight:600">已连续打卡 '+streak+' 天，继续保持！</p>' +
+      '<button class="btn-big" style="margin-top:24px" onclick="renderHome()">返回首页</button>' +
+    '</div>';
+};
+
+/* ---------- 错词本 ---------- */
+window.renderWrong = function(){
+  var wrongs = Object.keys(db.wrong);
+  var html = '<div class="top"><div class="logo">错词本</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>';
+  if (!wrongs.length) {
+    html += '<div class="card" style="text-align:center;color:#0F6E56;font-weight:600;padding:30px">没有错词，太棒了！</div>';
+  } else {
+    html += '<div class="card"><ul class="wlist">' + wrongs.map(function(w){
+      var meaning = findMeaning(w);
+      return '<li><span>'+esc(w)+'</span><small>'+esc(meaning)+' · 错 '+db.wrong[w]+' 次</small></li>';
+    }).join("") + '</ul>';
+    html += '<button class="btn-big" style="margin-top:14px" onclick="startSession()">开始复习（会优先出这些词）</button></div>';
+  }
+  app().innerHTML = html;
+};
+function findMeaning(w){
+  var banks = BANKS;
+  for (var b in banks) { for (var i=0;i<banks[b].length;i++) if (banks[b][i].w === w) return banks[b][i].m; }
+  for (var j=0;j<db.customWords.length;j++) if (db.customWords[j].w === w) return db.customWords[j].m;
+  return "";
+}
+
+/* ---------- 全部单词 ---------- */
+window.renderList = function(){
+  var all = bankWords();
+  var html = '<div class="top"><div class="logo">全部单词</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>';
+  html += '<div class="card"><ul class="wlist">' + all.map(function(it){
+    var ok = db.mastered[it.w] ? '<span style="color:#0F6E56;font-weight:600">已掌握</span>' : (db.wrong[it.w] ? '<span style="color:#A32D2D">错词</span>' : '<span style="color:#888">待学习</span>');
+    return '<li><span>'+esc(it.w)+' <small style="margin-left:8px">'+esc(it.m)+'</small></span>'+ok+'</li>';
+  }).join("") + '</ul></div>';
+  app().innerHTML = html;
+};
+
+/* ---------- 我的数据 ---------- */
+window.renderData = function(){
+  var lines = db.customWords.map(function(it){ return it.w+"|"+it.m; }).join("\n");
+  app().innerHTML =
+    '<div class="top"><div class="logo">我的数据</div><button class="btn btn-ghost" onclick="renderHome()">返回</button></div>' +
+    '<div class="card">' +
+      '<h3 class="sec" style="margin-top:0">备份与恢复（推荐每周一次）</h3>' +
+      '<button class="btn-big" onclick="exportData()">导出备份文件</button>' +
+      '<button class="btn-big btn-warn" style="margin-top:10px" onclick="document.getElementById(\'impFile\').click()">导入备份文件</button>' +
+      '<input type="file" id="impFile" accept=".json" class="hidden" onchange="importData(this)">' +
+      '<div class="muted">导出的文件发给老师保存；换新手机时导入即可恢复全部进度。</div>' +
+    '</div>' +
+    '<div class="card">' +
+      '<h3 class="sec" style="margin-top:0">添加自定义单词（每行一个：单词|意思）</h3>' +
+      '<textarea id="cwArea" rows="5" placeholder="例如：&#10;theater|剧场&#10;excited|兴奋的">' + esc(lines) + '</textarea>' +
+      '<button class="btn-big" style="margin-top:10px" onclick="saveCustom()">保存自定义词库</button>' +
+    '</div>' +
+    '<div class="card">' +
+      '<h3 class="sec" style="margin-top:0">清空数据</h3>' +
+      '<button class="btn-big btn-warn" onclick="resetAll()" style="background:#FCEBEB;color:#A32D2D">清空全部打卡记录（不可恢复）</button>' +
+    '</div>';
+};
+window.saveCustom = function(){
+  var txt = document.getElementById("cwArea").value.trim();
+  var arr = [];
+  txt.split("\n").forEach(function(line){
+    line = line.trim();
+    if (!line) return;
+    var parts = line.split("|");
+    var w = parts[0].trim(), m = parts[1] ? parts[1].trim() : "";
+    if (w) arr.push({w:w, m:m});
+  });
+  db.customWords = arr;
+  if (db.bank === "自定义词库" && !arr.length) db.bank = "三年级起步";
+  save();
+  alert("已保存 "+arr.length+" 个自定义单词");
+};
+window.exportData = function(){
+  var blob = new Blob([JSON.stringify(db, null, 2)], {type:"application/json"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "单词打卡备份-" + db.name + "-" + today() + ".json";
+  a.click();
+};
+window.importData = function(input){
+  var f = input.files[0];
+  if (!f) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    try {
+      var obj = JSON.parse(reader.result);
+      if (!obj || !obj.name) throw new Error("bad");
+      db = obj;
+      save();
+      alert("导入成功，欢迎回来 " + db.name);
+      renderHome();
+    } catch(e) { alert("导入失败：文件格式不正确"); }
+  };
+  reader.readAsText(f);
+};
+window.resetAll = function(){
+  if (!confirm("确定要清空全部数据吗？此操作不可恢复，建议先导出备份。")) return;
+  db = { name:"", bank:"", pointer:0, mastered:{}, wrong:{}, reviewQueue:[], records:{}, customWords:[] };
+  save();
+  renderSetup();
+};
+
+if (db.name) renderHome(); else renderSetup();
+})();
+</script>
+</body>
+</html>
+
